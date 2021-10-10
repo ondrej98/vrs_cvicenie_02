@@ -1,81 +1,95 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "assignment.h"
 
-int main(void)
-{
-  /*
-   *  DO NOT WRITE TO THE WHOLE REGISTER!!!
-   *  Write to the bits, that are meant for change.
-   */
-   
-  //Systick init
-  LL_Init1msTick(8000000);
-  LL_SYSTICK_SetClkSource(LL_SYSTICK_CLKSOURCE_HCLK);
-  LL_SetSystemCoreClock(8000000);	
+int main(void) {
+	/*
+	 *  DO NOT WRITE TO THE WHOLE REGISTER!!!
+	 *  Write to the bits, that are meant for change.
+	 */
 
-  /*
-   * TASK - configure MCU peripherals so that button state can be read and LED will blink.
-   * Button must be connected to the GPIO port A and its pin 3.
-   * LED must be connected to the GPIO port A and its pin 4.
-   *
-   * In header file "assignment.h" define macros for MCU registers access and LED blink application.
-   * Code in this file must use these macros for the peripherals setup.
-   * Code of the LED blink application is already given so just the macros used in the application must be defined.
-   */
+	//Systick init
+	LL_Init1msTick(8000000);
+	LL_SYSTICK_SetClkSource(LL_SYSTICK_CLKSOURCE_HCLK);
+	LL_SetSystemCoreClock(8000000);
 
+	/*
+	 * TASK - configure MCU peripherals so that button state can be read and LED will blink.
+	 * Button must be connected to the GPIO port A and its pin 3.
+	 * LED must be connected to the GPIO port A and its pin 4.
+	 *
+	 * In header file "assignment.h" define macros for MCU registers access and LED blink application.
+	 * Code in this file must use these macros for the peripherals setup.
+	 * Code of the LED blink application is already given so just the macros used in the application must be defined.
+	 */
 
-  /* Enable clock for GPIO port A*/
+	/* Enable clock for GPIO port A*/
 
 	//type your code for GPIOA clock enable here:
+	*((volatile uint32_t*) (RCC_AHBENR_REG)) |= (uint32_t) (1 << 17);
 
-
-  /* GPIOA pin 3 and 4 setup */
+	/* GPIOA pin 3 and 4 setup */
 
 	//type your code for GPIOA pins setup here:
+	/*GPIO MODER register*/
+	//Set mode for pin 3
+	*((volatile uint32_t*) (GPIOA_MODER_REG)) &= ~(uint32_t) (0x3 << 6); //GPIOA pin 3 reset (input)
+	//Set mode for pin 4
+	*((volatile uint32_t*) (GPIOA_MODER_REG)) &= ~(uint32_t) (0x3 << 8); //GPIOA pin 4 reset (input)
+	*((volatile uint32_t*) (GPIOA_MODER_REG)) |= (uint32_t) (1 << 8); //GPIOA pin 4 set output
 
+	/*GPIO OTYPER register*/
+	*((volatile uint32_t*) ((uint32_t) (GPIOA_OTYPER_REG))) &= ~(1 << 4);
 
-  while (1)
-  {
-	  if(BUTTON_GET_STATE)
-	  {
-		  // 0.25s delay
-		  LL_mDelay(250);
-		  LED_ON;
-		  // 0.25s delay
-		  LL_mDelay(250);
-		  LED_OFF;
-	  }
-	  else
-	  {
-		  // 1s delay
-		  LL_mDelay(1000);
-		  LED_ON;
-		  // 1s delay
-		  LL_mDelay(1000);
-		  LED_OFF;
-	  }
-  }
+	/*GPIO OSPEEDR register*/
+	//Set Low speed for GPIOA pin 4
+	*((volatile uint32_t*) ((uint32_t) (GPIOA_OSPEEDER_REG))) &= ~(0x3 << 8);
+
+	/*GPIO PUPDR register, reset*/
+	//Set pull up for GPIOA pin 3 (input)
+	*((volatile uint32_t*) ((uint32_t) (GPIOA_PUPDR_REG))) |= (1 << 6);
+	//Set no pull for GPIOA pin 4
+	*((volatile uint32_t*) ((uint32_t) (GPIOA_PUPDR_REG))) &= ~(0x3 << 8);
+	while (1) {
+	if(BUTTON_GET_STATE)
+	{
+		// 0.25s delay
+		LL_mDelay(250);
+		LED_ON;
+		// 0.25s delay
+		LL_mDelay(250);
+		LED_OFF;
+	}
+	else
+	{
+		// 1s delay
+		LL_mDelay(1000);
+		LED_ON;
+		// 1s delay
+		LL_mDelay(1000);
+		LED_OFF;
+	}
+}
 
 }
 
@@ -84,15 +98,14 @@ int main(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void Error_Handler(void) {
+/* USER CODE BEGIN Error_Handler_Debug */
+/* User can add his own implementation to report the HAL error return state */
 
-  /* USER CODE END Error_Handler_Debug */
+/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
