@@ -18,7 +18,7 @@
 //GPIOA peripheral base address
 #define	GPIOA_BASE_ADDR			(uint32_t)(0x48000000U)
 //MODER register
-#define	GPIOA_MODER_REG			*(uint32_t *)(GPIOA_BASE_ADDR + 0x00U)
+#define	GPIOA_MODER_REG			*(uint32_t *)(0x48000000U + 0x00U)//*(uint32_t *)(GPIOA_BASE_ADDR + 0x00U)
 //OTYPER register
 #define	GPIOA_OTYPER_REG		*(uint32_t *)(GPIOA_BASE_ADDR + 0x04U)
 //OSPEEDER register
@@ -38,13 +38,13 @@
 //RCC base address
 #define	RCC_BASE_ADDR			(uint32_t)(0x40021000U)
 //AHBEN register
-#define	RCC_AHBENR_REG			((volatile uint32_t *) (uint32_t)(RCC_BASE_ADDR + 0x00000014U))
+#define	RCC_AHBENR_REG			*(uint32_t *)(RCC_BASE_ADDR + 0x00000014U)
 
 /* LED and button macros */
-#define LED_ON					*((volatile uint32_t *)(GPIOA_BSRR_REG)) |= (1 << 4)
-#define LED_OFF					*((volatile uint32_t *)(GPIOA_BRR_REG)) |= (1 << 4);
+#define LED_ON					*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x18U))) |= (1 << 5)
+#define LED_OFF					*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x28U))) |= (1 << 5)
 
-#define BUTTON_GET_STATE		*((volatile uint32_t *)(GPIOA_IDR_REG)) &= (1 << 3);
+#define BUTTON_GET_STATE		!(*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x10U))) & (1 << 4))
 
 
 #endif /* ASSIGNMENT_H_ */
