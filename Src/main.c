@@ -46,50 +46,48 @@ int main(void) {
 	/* Enable clock for GPIO port A*/
 
 	//type your code for GPIOA clock enable here:
-	*((volatile uint32_t*) (RCC_AHBENR_REG)) |= (uint32_t) (1 << 17);
+	RCC_AHBENR_REG |= (uint32_t) (1 << 17);
 
 	/* GPIOA pin 3 and 4 setup */
 
 	//type your code for GPIOA pins setup here:
 	/*GPIO MODER register*/
 	//Set mode for pin 3
-	*((volatile uint32_t*) (GPIOA_MODER_REG)) &= ~(uint32_t) (0x3 << 6); //GPIOA pin 3 reset (input)
+	//*((volatile uint32_t*) (GPIOA_MODER_REG)) &= ~(uint32_t) (0x3 << 6); //GPIOA pin 3 reset (input)
+	GPIOA_MODER_REG &= ~(uint32_t) (0x3 << 8); //GPIOA pin 3 reset (input)
 	//Set mode for pin 4
-	*((volatile uint32_t*) (GPIOA_MODER_REG)) &= ~(uint32_t) (0x3 << 8); //GPIOA pin 4 reset (input)
-	*((volatile uint32_t*) (GPIOA_MODER_REG)) |= (uint32_t) (1 << 8); //GPIOA pin 4 set output
+	GPIOA_MODER_REG &= ~(uint32_t) (0x3 << 10); //GPIOA pin 4 reset (input)
+	GPIOA_MODER_REG |= (uint32_t) (1 << 10); //GPIOA pin 4 set output
 
 	/*GPIO OTYPER register*/
-	*((volatile uint32_t*) ((uint32_t) (GPIOA_OTYPER_REG))) &= ~(1 << 4);
+	GPIOA_OTYPER_REG &= ~(1 << 5);
 
 	/*GPIO OSPEEDR register*/
 	//Set Low speed for GPIOA pin 4
-	*((volatile uint32_t*) ((uint32_t) (GPIOA_OSPEEDER_REG))) &= ~(0x3 << 8);
+	GPIOA_OSPEEDER_REG &= ~(0x3 << 10);
 
 	/*GPIO PUPDR register, reset*/
 	//Set pull up for GPIOA pin 3 (input)
-	*((volatile uint32_t*) ((uint32_t) (GPIOA_PUPDR_REG))) |= (1 << 6);
+	GPIOA_PUPDR_REG |= (1 << 8);
 	//Set no pull for GPIOA pin 4
-	*((volatile uint32_t*) ((uint32_t) (GPIOA_PUPDR_REG))) &= ~(0x3 << 8);
+	GPIOA_PUPDR_REG &= ~(0x3 << 10);
 	while (1) {
-	if(BUTTON_GET_STATE)
-	{
-		// 0.25s delay
-		LL_mDelay(250);
-		LED_ON;
-		// 0.25s delay
-		LL_mDelay(250);
-		LED_OFF;
+		if (BUTTON_GET_STATE) {
+			// 0.25s delay
+			LL_mDelay(250);
+			LED_ON;
+			// 0.25s delay
+			LL_mDelay(250);
+			LED_OFF;
+		} else {
+			// 1s delay
+			LL_mDelay(1000);
+			LED_ON;
+			// 1s delay
+			LL_mDelay(1000);
+			LED_OFF;
+		}
 	}
-	else
-	{
-		// 1s delay
-		LL_mDelay(1000);
-		LED_ON;
-		// 1s delay
-		LL_mDelay(1000);
-		LED_OFF;
-	}
-}
 
 }
 
@@ -102,10 +100,10 @@ int main(void) {
  * @retval None
  */
 void Error_Handler(void) {
-/* USER CODE BEGIN Error_Handler_Debug */
-/* User can add his own implementation to report the HAL error return state */
+	/* USER CODE BEGIN Error_Handler_Debug */
+	/* User can add his own implementation to report the HAL error return state */
 
-/* USER CODE END Error_Handler_Debug */
+	/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
