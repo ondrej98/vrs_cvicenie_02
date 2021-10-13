@@ -41,10 +41,10 @@
 #define	RCC_AHBENR_REG			*(uint32_t *)(RCC_BASE_ADDR + 0x00000014U)
 
 /* LED and button macros */
-#define LED_ON					*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x18U))) |= (1 << 5)
-#define LED_OFF					*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x28U))) |= (1 << 5)
+#define LED_ON					*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x18U))) |= (1 << 4)
+#define LED_OFF					*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x28U))) |= (1 << 4)
 
-#define BUTTON_GET_STATE		!(*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x10U))) & (1 << 4))
+#define BUTTON_GET_STATE		!(*((volatile uint32_t *)((uint32_t)(GPIOA_BASE_ADDR + 0x10U))) & (1 << 3))
 
 
 #endif /* ASSIGNMENT_H_ */

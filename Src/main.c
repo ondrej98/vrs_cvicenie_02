@@ -54,23 +54,23 @@ int main(void) {
 	/*GPIO MODER register*/
 	//Set mode for pin 3
 	//*((volatile uint32_t*) (GPIOA_MODER_REG)) &= ~(uint32_t) (0x3 << 6); //GPIOA pin 3 reset (input)
-	GPIOA_MODER_REG &= ~(uint32_t) (0x3 << 8); //GPIOA pin 3 reset (input)
+	GPIOA_MODER_REG &= ~(uint32_t) (0x3 << 6); //GPIOA pin 3 reset (input)
 	//Set mode for pin 4
-	GPIOA_MODER_REG &= ~(uint32_t) (0x3 << 10); //GPIOA pin 4 reset (input)
-	GPIOA_MODER_REG |= (uint32_t) (1 << 10); //GPIOA pin 4 set output
+	GPIOA_MODER_REG &= ~(uint32_t) (0x3 << 8); //GPIOA pin 4 reset (input)
+	GPIOA_MODER_REG |= (uint32_t) (1 << 8); //GPIOA pin 4 set output
 
 	/*GPIO OTYPER register*/
-	GPIOA_OTYPER_REG &= ~(1 << 5);
+	GPIOA_OTYPER_REG &= ~(1 << 4);
 
 	/*GPIO OSPEEDR register*/
 	//Set Low speed for GPIOA pin 4
-	GPIOA_OSPEEDER_REG &= ~(0x3 << 10);
+	GPIOA_OSPEEDER_REG &= ~(0x3 << 8);
 
 	/*GPIO PUPDR register, reset*/
 	//Set pull up for GPIOA pin 3 (input)
-	GPIOA_PUPDR_REG |= (1 << 8);
+	GPIOA_PUPDR_REG |= (1 << 6);
 	//Set no pull for GPIOA pin 4
-	GPIOA_PUPDR_REG &= ~(0x3 << 10);
+	GPIOA_PUPDR_REG &= ~(0x3 << 8);
 	while (1) {
 		if (BUTTON_GET_STATE) {
 			// 0.25s delay
